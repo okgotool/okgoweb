@@ -1,0 +1,55 @@
+{
+    "swagger": "2.0",
+    "info": {
+        "contact": {}
+    },
+    "paths": {
+        "/healthz": {
+            "get": {
+                "description": "Health check API",
+                "summary": "Healthz API",
+                "responses": {
+                    "200": {
+                        "description": "{\\\"msg\\\":\\\"ok\\\"}",
+                        "schema": {
+                            "$ref": "#/definitions/okresponse.Success"
+                        }
+                    }
+                }
+            }
+        },
+        "/hello": {
+            "get": {
+                "description": "Hello test API",
+                "summary": "Hello API",
+                "responses": {
+                    "200": {
+                        "description": "{\"msg\":\"ok\"}",
+                        "schema": {
+                            "$ref": "#/definitions/okresponse.Success"
+                        }
+                    }
+                }
+            }
+        },
+        "/metrics": {
+            "get": {
+                "description": "Metrics API",
+                "summary": "Metrics API"
+            }
+        }
+    },
+    "definitions": {
+        "okresponse.Success": {
+            "type": "object",
+            "properties": {
+                "code": {
+                    "type": "integer"
+                },
+                "msg": {
+                    "type": "string"
+                }
+            }
+        }
+    }
+}
