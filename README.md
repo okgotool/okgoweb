@@ -1,6 +1,7 @@
 # okgoweb
 
-golang web framework
+golang web framework.
+Use Gin, logrus logger.
 
 ## usage
 
