@@ -10,11 +10,6 @@ import (
 	"time"
 
 	"github.com/gin-gonic/gin"
-
-	"github.com/okgotool/okgoweb/docs"
-	"github.com/okgotool/okgoweb/okapp"
-	swaggerFiles "github.com/swaggo/files"
-	ginSwagger "github.com/swaggo/gin-swagger"
 )
 
 var (
@@ -51,15 +46,6 @@ func (w *OkWebServer) createGinRouter() *gin.Engine {
 
 	if EnableCors {
 		router.Use(w.cors())
-	}
-
-	if EnableSwagger {
-		// start swagger API:
-		docs.SwaggerInfo.Host = okapp.AppHostName
-		docs.SwaggerInfo.BasePath = "/"
-		docs.SwaggerInfo.Schemes = []string{"http"}
-		// logger.Info("Swagger URL: http://" + config.AppHostName + "/swagger/index.html")
-		router.GET("/swagger/*any", ginSwagger.DisablingWrapHandler(swaggerFiles.Handler, "APP_DISABLE_SWAGGER"))
 	}
 
 	if EnableMonitor || EnableMonitorApi {
