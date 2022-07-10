@@ -15,14 +15,14 @@ import (
 
 type (
 	DbConfig struct {
-		Host         string `json:"host"`
-		Port         int    `json:"port"`
-		DbName       string `json:"dbName"`
-		User         string `json:"user"`
-		Password     string `json:"password"`
-		MaxIdleConns int    `json:"maxIdleConns"`
-		MaxOpenConns int    `json:"maxOpenConns"`
-		Dsn          string `json:"dsn"`
+		Host         string `json:"host" yaml:"host"`
+		Port         int    `json:"port" yaml:"port"`
+		DbName       string `json:"dbName" yaml:"dbName"`
+		User         string `json:"user" yaml:"user"`
+		Password     string `json:"password" yaml:"password"`
+		MaxIdleConns int    `json:"maxIdleConns" yaml:"maxIdleConns"`
+		MaxOpenConns int    `json:"maxOpenConns" yaml:"maxOpenConns"`
+		Dsn          string `json:"dsn" yaml:"dsn"`
 		// ConnMaxIdleTime time.Duration `json:"connMaxIdleTime"`
 		// ConnMaxLifetime time.Duration `json:"connMaxLifetime"`
 	}

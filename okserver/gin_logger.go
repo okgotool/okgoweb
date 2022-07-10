@@ -3,6 +3,7 @@ package okserver
 import (
 	"io"
 	"os"
+	"strings"
 
 	"github.com/gin-gonic/gin"
 	"github.com/okgotool/okgoweb/oklogger"
@@ -42,7 +43,7 @@ func InitGinLog() {
 		gin.DefaultWriter = io.MultiWriter(rotateLog)
 	}
 
-	logMode := gin.TestMode
+	logMode := gin.ReleaseMode
 	if GinLoggerConfig.LogLevel != logrus.DebugLevel {
 		logMode = gin.ReleaseMode
 	} else {
@@ -50,4 +51,10 @@ func InitGinLog() {
 	}
 
 	gin.SetMode(logMode)
+}
+
+func SetServerLogLevel(level string) {
+	if ginLevel, ok := GinLogLevels[strings.ToLower(level)]; ok {
+		gin.SetMode(ginLevel)
+	}
 }
