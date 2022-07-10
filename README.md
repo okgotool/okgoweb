@@ -13,20 +13,19 @@ Server will start at 8080 port by default.
 package main
 
 import (
-	"github.com/okgotool/okgoweb/okweb"
+	"github.com/okgotool/okgoweb/okserver"
 )
 
 func main() {
 	// Get web router:
-	router := okweb.OkWeb.GetRouter()
+	router := okserver.WebServer.GetRouter()
 
 	// add api:
-	router.GET("/hello", okweb.Healthcheck.HelloHandle)
+	router.GET("/hello", okserver.Healthcheck.HelloHandle)
 
 	// Start server:
-	okweb.OkWeb.Start()
+	okserver.WebServer.Start()
 }
-
 ```
 
 It use gin, go mod.
