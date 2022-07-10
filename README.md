@@ -32,7 +32,6 @@ It use gin, go mod.
 Run before build it:
 
 ```
-swag init
 
 go mod tidy
 go mod vendor
@@ -58,7 +57,3 @@ Set them before start the server:
 ### monitor api
 
 http://127.0.0.1:8080/metrics
-
-### swagger
-
-http://127.0.0.1:8080/swagger/index.html
