@@ -12,6 +12,12 @@ var (
 )
 
 func AddConnConfig(name string, config *DbConfig) error {
+	if cfg, ok := dbConnConfigs[name]; ok && cfg == config {
+		if conn, ok := dbConnPool[name]; ok && conn != nil {
+			return nil
+		}
+	}
+
 	conn, err := GetDBConnFromConfig(config)
 	if err != nil || conn == nil {
 		return errors.New("Failed to connect db with the config, invalid db config:" + err.Error())
