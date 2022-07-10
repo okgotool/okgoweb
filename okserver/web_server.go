@@ -32,17 +32,17 @@ func (w *OkWebServer) Start() {
 
 	InitGinLog()
 
-	w.StartGinServer(router)
+	w.startGinServer(router)
 }
 
 func (w *OkWebServer) GetRouter() *gin.Engine {
 	if w.Router == nil {
-		w.Router = w.CreateGinRouter()
+		w.Router = w.createGinRouter()
 	}
 	return w.Router
 }
 
-func (w *OkWebServer) CreateGinRouter() *gin.Engine {
+func (w *OkWebServer) createGinRouter() *gin.Engine {
 	router := gin.Default()
 
 	if EnableHealthcheck {
@@ -50,7 +50,7 @@ func (w *OkWebServer) CreateGinRouter() *gin.Engine {
 	}
 
 	if EnableCors {
-		router.Use(w.Cors())
+		router.Use(w.cors())
 	}
 
 	if EnableSwagger {
@@ -72,7 +72,7 @@ func (w *OkWebServer) CreateGinRouter() *gin.Engine {
 	return router
 }
 
-func (w *OkWebServer) StartGinServer(router *gin.Engine) {
+func (w *OkWebServer) startGinServer(router *gin.Engine) {
 	// logger.Info("Enter " + config.AppName + " main...")
 
 	server := &http.Server{
@@ -94,8 +94,8 @@ func (w *OkWebServer) StartGinServer(router *gin.Engine) {
 	w.gracefulExitWeb(server)
 }
 
-// Cors :
-func (w *OkWebServer) Cors() gin.HandlerFunc {
+// cors :
+func (w *OkWebServer) cors() gin.HandlerFunc {
 	return func(c *gin.Context) {
 		method := c.Request.Method
 
