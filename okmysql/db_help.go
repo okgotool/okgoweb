@@ -2,6 +2,7 @@ package okmysql
 
 import (
 	"errors"
+	"fmt"
 
 	"github.com/sirupsen/logrus"
 	"gorm.io/driver/mysql"
@@ -15,7 +16,7 @@ import (
 type (
 	DbConfig struct {
 		Host         string `json:"host"`
-		Port         string `json:"port"`
+		Port         int    `json:"port"`
 		DbName       string `json:"dbName"`
 		User         string `json:"user"`
 		Password     string `json:"password"`
@@ -35,9 +36,20 @@ func GetDBConnFromConfig(c *DbConfig) (*gorm.DB, error) {
 	dbUser := c.User
 	dbPass := c.Password
 
+	if len(dbHost) < 1 || len(dbName) < 1 || len(dbPass) < 1 {
+		return nil, errors.New("DB host or name or password not set")
+	}
+
+	if dbPort < 1 {
+		dbPort = 3306
+	}
+	if len(dbUser) < 1 {
+		dbUser = "root"
+	}
+
 	logger.WithFields(logrus.Fields{"dbHost": dbHost, "dbPort": dbPort, "dbName": dbName, "dbUser": dbUser}).Info("Start to init DB connection...")
 
-	dbDSN := dbUser + ":" + dbPass + "@tcp(" + dbHost + ":" + dbPort + ")/" + dbName + "?" + c.Dsn
+	dbDSN := fmt.Sprintf(dbUser+":"+dbPass+"@tcp("+dbHost+":%d)/"+dbName+"?"+c.Dsn, dbPort)
 	db, err := gorm.Open(mysql.New(mysql.Config{
 		DSN:                       dbDSN, // data source name
 		DefaultStringSize:         4096,  // default size for string fields
@@ -50,14 +62,14 @@ func GetDBConnFromConfig(c *DbConfig) (*gorm.DB, error) {
 	})
 
 	if err != nil {
-		logger.Error("Failed to connect database: "+dbUser+":@tcp("+dbHost+":"+dbPort+")/"+dbName, err)
+		logger.Error("Failed to connect database: "+dbUser+":@tcp("+dbHost+":", dbPort, ")/"+dbName, err)
 		return nil, errors.New("failed to connect database: " + err.Error())
 	}
 	logger.WithFields(logrus.Fields{"dbHost": dbHost, "dbPort": dbPort, "dbName": dbName}).Info("DB connected.")
 
 	sqlDB, err := db.DB()
 	if err != nil {
-		logger.WithFields(logrus.Fields{"dbHost": dbHost, "dbPort": dbPort, "dbName": dbName}).Error("Failed to get sqlDB: "+dbUser+":@tcp("+dbHost+":"+dbPort+")/"+dbName, err)
+		logger.WithFields(logrus.Fields{"dbHost": dbHost, "dbPort": dbPort, "dbName": dbName}).Error("Failed to get sqlDB: "+dbUser+":@tcp("+dbHost+":", dbPort, ")/"+dbName, err)
 		return nil, errors.New("failed to get sqlDB: " + err.Error())
 	}
 
