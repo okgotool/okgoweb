@@ -1,4 +1,4 @@
-package okweb
+package okserver
 
 import (
 	"github.com/okgotool/okgoweb/oklogger"

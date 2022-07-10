@@ -8,9 +8,9 @@ import (
 	"gorm.io/gorm"
 )
 
-const (
-	dbConnectionURL string = "?charset=utf8&parseTime=True&loc=Local"
-)
+// const (
+// 	dbConnectionURL string = "?charset=utf8&parseTime=True&loc=Local"
+// )
 
 type (
 	DbConfig struct {
@@ -21,6 +21,7 @@ type (
 		Password     string `json:"password"`
 		MaxIdleConns int    `json:"maxIdleConns"`
 		MaxOpenConns int    `json:"maxOpenConns"`
+		Dsn          string `json:"dsn"`
 		// ConnMaxIdleTime time.Duration `json:"connMaxIdleTime"`
 		// ConnMaxLifetime time.Duration `json:"connMaxLifetime"`
 	}
@@ -36,7 +37,7 @@ func GetDBConnFromConfig(c *DbConfig) (*gorm.DB, error) {
 
 	logger.WithFields(logrus.Fields{"dbHost": dbHost, "dbPort": dbPort, "dbName": dbName, "dbUser": dbUser}).Info("Start to init DB connection...")
 
-	dbDSN := dbUser + ":" + dbPass + "@tcp(" + dbHost + ":" + dbPort + ")/" + dbName + dbConnectionURL
+	dbDSN := dbUser + ":" + dbPass + "@tcp(" + dbHost + ":" + dbPort + ")/" + dbName + "?" + c.Dsn
 	db, err := gorm.Open(mysql.New(mysql.Config{
 		DSN:                       dbDSN, // data source name
 		DefaultStringSize:         4096,  // default size for string fields

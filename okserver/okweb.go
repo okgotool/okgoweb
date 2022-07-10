@@ -1,4 +1,4 @@
-package okweb
+package okserver
 
 import (
 	"context"
@@ -18,7 +18,7 @@ import (
 )
 
 var (
-	OkWeb = &OkWebServer{}
+	WebServer = &OkWebServer{}
 )
 
 type (
@@ -32,12 +32,12 @@ func (w *OkWebServer) Start() {
 
 	InitGinLog()
 
-	OkWeb.StartGinServer(router)
+	w.StartGinServer(router)
 }
 
 func (w *OkWebServer) GetRouter() *gin.Engine {
 	if w.Router == nil {
-		w.Router = OkWeb.CreateGinRouter()
+		w.Router = w.CreateGinRouter()
 	}
 	return w.Router
 }

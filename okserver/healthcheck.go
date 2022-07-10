@@ -1,4 +1,4 @@
-package okweb
+package okserver
 
 import (
 	"github.com/gin-gonic/gin"
