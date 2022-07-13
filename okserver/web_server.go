@@ -10,6 +10,7 @@ import (
 	"time"
 
 	"github.com/gin-gonic/gin"
+	"github.com/okgotool/okgoweb/okmonitor"
 )
 
 var (
@@ -49,10 +50,10 @@ func (w *OkWebServer) createGinRouter() *gin.Engine {
 	}
 
 	if EnableMonitor || EnableMonitorApi {
-		WebMonitor.AddApis(router)
+		okmonitor.AddMetricsApis(router)
 	}
 	if EnableMonitorApi {
-		router.Use(WebMonitor.ApiAccessMetricsMiddleware)
+		router.Use(okmonitor.ApiAccessMetricsMiddleware)
 	}
 
 	return router
@@ -60,6 +61,12 @@ func (w *OkWebServer) createGinRouter() *gin.Engine {
 
 func (w *OkWebServer) startGinServer(router *gin.Engine) {
 	// logger.Info("Enter " + config.AppName + " main...")
+
+	// enable prometheus metrics:
+	if EnableMonitor || EnableMonitorApi {
+		okmonitor.EnableApiCallMetrics()
+		okmonitor.EnableApiMetrics()
+	}
 
 	server := &http.Server{
 		Addr:           fmt.Sprintf(":%d", WebServerPort),

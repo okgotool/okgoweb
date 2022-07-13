@@ -1,4 +1,4 @@
-package okserver
+package okmonitor
 
 import (
 	"fmt"
@@ -10,7 +10,7 @@ import (
 )
 
 var (
-	WebMonitor = &Monitor{}
+	ApiMonitorEnabled bool = false
 
 	ApiAccessRequestDuration = prometheus.NewHistogramVec(
 		prometheus.HistogramOpts{
@@ -20,24 +20,10 @@ var (
 		},
 		[]string{"api", "method", "statusCode"},
 	)
-
-	ApiCallRequestDuration = prometheus.NewHistogramVec(
-		prometheus.HistogramOpts{
-			Name:    "okweb_api_call_response_duration_seconds",
-			Help:    "Histogram of latencies for api call HTTP requests.",
-			Buckets: []float64{.05, 0.1, .25, .5, .75, 1, 2, 5, 20, 60},
-		},
-		[]string{"host", "api", "method", "statusCode"},
-	)
 )
 
-type (
-	Monitor struct {
-	}
-)
-
-func (w *Monitor) AddApis(router *gin.Engine) {
-	router.GET("/metrics", w.MetricsHandler())
+func AddMetricsApis(router *gin.Engine) {
+	router.GET("/metrics", MetricsHandler())
 }
 
 // MetricsHandler ：
@@ -45,7 +31,7 @@ func (w *Monitor) AddApis(router *gin.Engine) {
 // @Summary Metrics API
 // @Description Metrics API
 // @Router /metrics [get]
-func (w *Monitor) MetricsHandler() gin.HandlerFunc {
+func MetricsHandler() gin.HandlerFunc {
 	h := promhttp.Handler()
 
 	return func(c *gin.Context) {
@@ -54,7 +40,7 @@ func (w *Monitor) MetricsHandler() gin.HandlerFunc {
 }
 
 // apiAccessMetricsMiddleware :
-func (w *Monitor) ApiAccessMetricsMiddleware(c *gin.Context) {
+func ApiAccessMetricsMiddleware(c *gin.Context) {
 	// metrics :
 	path := c.FullPath()
 	if len(path) < 1 {
@@ -76,7 +62,9 @@ func (w *Monitor) ApiAccessMetricsMiddleware(c *gin.Context) {
 }
 
 // init : auto run before main
-func (w *Monitor) InitApiMetrics() {
-	prometheus.MustRegister(ApiAccessRequestDuration)
-	prometheus.MustRegister(ApiCallRequestDuration)
+func EnableApiMetrics() {
+	if !ApiMonitorEnabled {
+		ApiMonitorEnabled = true
+		prometheus.MustRegister(ApiAccessRequestDuration)
+	}
 }
